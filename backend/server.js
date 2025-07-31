@@ -4,13 +4,17 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-require('./config/db.js');
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
-app.use(cors);
+app.use(cors());
+
+require('./config/db.js');
+
+const authRoutes = require('./routes/auth.js');
+
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello ATM Backend Running !!");

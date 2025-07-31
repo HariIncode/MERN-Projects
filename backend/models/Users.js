@@ -5,7 +5,7 @@ const { customAlphabet } = require('nanoid');
 const nanoid = customAlphabet('ABCDEFGHIJK0123456789', 6);
 
 const userSchema = new mongoose.Schema({
-    accountNumber:{ type: String, required: true, unique: true },
+    accountNumber:{ type: String, unique: true },
     name: { type: String, required: true },
     pin: { type: Number, required: true, min: 1000, max: 9999 },
     balance: { type: Number, default: 1000.0 },
