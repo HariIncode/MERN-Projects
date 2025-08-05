@@ -7,7 +7,7 @@ const nanoid = customAlphabet('ABCDEFGHIJK0123456789', 6);
 const userSchema = new mongoose.Schema({
     accountNumber:{ type: String, unique: true },
     name: { type: String, required: true },
-    pin: { type: Number, required: true, min: 1000, max: 9999 },
+    pin: { type: String, required: true },
     balance: { type: Number, default: 1000.0 },
     accountType: { type: String, enum:['Savings', 'Current'], required: true},
     transaction: [{
@@ -30,6 +30,10 @@ userSchema.pre('save', async function (next){
 
     //Hash the PIN if modified or new
     if(this.isModified('pin')){
+        if (!/^\d{4}$/.test(this.pin)){
+            throw new Error('PIN must be a 4-digit number');
+        }
+        
         const salt = await bcrypt.genSalt(10);
         //bcrypt works only on Strings
         this.pin = await bcrypt.hash(this.pin.toString(), salt);
