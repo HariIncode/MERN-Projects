@@ -8,14 +8,15 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.SERVER_PORT;
 
 app.use(bodyParser.json());
 app.use(cors());
 
 require('./config/db.js');
 
-
+const basicRoutes = require('./routes/crud.js');
+app.use('/api/crud', basicRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello ATM Backend Running !!");

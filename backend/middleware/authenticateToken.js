@@ -2,13 +2,17 @@ require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
 
-function authenticationToken(req, res, next){
+// Middleware to authenticate
+function authenticateToken(req, res, next){
+    // auth tokens are in headers for security reasons 
     const authHeader = req.headers['authorization'];
 
+    // If authHeader exist it will give the token 
+    // Else it will be undefined 
     const token = authHeader && authHeader.split(' ')[1];
 
     if(token == null){
-        return res.sendStatus(401)
+        return res.sendStatus(401);
     }
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -19,5 +23,7 @@ function authenticationToken(req, res, next){
         req.user = user;
 
         next();
-    })
-}
+    });
+};
+
+module.exports = authenticateToken;

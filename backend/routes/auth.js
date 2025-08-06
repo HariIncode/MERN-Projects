@@ -1,6 +1,9 @@
+require('dotenv').config();
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/Users.js');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -41,7 +44,7 @@ router.post('/login', async (req, res) => {
         const user = await User.findOne({ accountNumber });
         
         if (!user){
-            return res.status(404).json({ message: "User Not Found! "});
+            return res.status(404).json({ message: "User Not Found!" });
         }
 
         const isValidPassword = bcrypt.compare(pin.toString(), user.pin);
@@ -50,7 +53,13 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: "Password Dosen't Match" });
         }
 
-        res.status(202).json({ message: "Login Successful!" });
+        const accessToken = generateAccessToken(user);
+
+        // Generate a RefreshToken and add it to the Array
+        const refreshToken = jwt.sign({ accountNumber: user.accountNumber }, process.env.REFRESH_TOKEN_SECRET);
+        refreshTokens.push(refreshToken);
+
+        res.status(202).json({ message: "Login Successful!", accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
         console.log(`Error During Login: ${error}`);
         res.status(500).json({ message: `Error During Login: ${error}`});
@@ -58,42 +67,38 @@ router.post('/login', async (req, res) => {
 
 });
 
-router.post('login', async (req, res) => {
-    try{
-        
-    }catch (error){
-        console.log(error);
-    }
-});
+// Array to Store refresh tokens
+let refreshTokens = [];
 
+// To validate the RefreshToken
+router.post('/token', (req, res) => {
+    // Get the token from body
+    const refreshToken = req.body.token;
 
-// Filters the data and sends only the users data
-// app.get('/posts', authenticateToken, (req, res) => {
-//     res.send(posts.filter(post => post.username === req.user.name));
-// });
+    if (refreshToken == null) return res.sendStatus(401);
+    if(!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
 
-// Middleware to authenticate
-function authenticateToken(req, res, next){
-    // auth tokens are in headers for security reasons 
-    const authHeader = req.headers['authorization'];
-
-    // If authHeader exist it will give the token 
-    // Else it will be undefined 
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if(token == null){
-        return res.sendStatus(401);
-    }
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) {
+    // Validate the refresh token with the secret key
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if(err){
             return res.sendStatus(403);
         }
 
-        req.user = user;
+        // If Valid Generate a new AccessKey
+        const accessToken = generateAccessToken({ accountNumber: user.accountNumber });
 
-        next();
-    });
+        res.json({ accessToken: accessToken });
+    })
+});
+
+// API to Delete the RefreshToken
+router.delete('/logout', (req, res) => {
+    refreshTokens = refreshTokens.filter(token => token !== req.body.token);
+    res.sendStatus(204);
+});
+
+function generateAccessToken(user){
+    return jwt.sign({ accountNumber: user.accountNumber }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '50s' });
 }
 
 module.exports = router;
