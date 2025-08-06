@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/Users.js');
@@ -61,7 +59,7 @@ router.post('/login', async (req, res) => {
 
         res.status(202).json({ message: "Login Successful!", accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
-        console.log(`Error During Login: ${error}`);
+        console.log(`Error During Login: ${error}`.red);
         res.status(500).json({ message: `Error During Login: ${error}`});
     }
 

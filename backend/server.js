@@ -15,8 +15,8 @@ app.use(cors());
 
 require('./config/db.js');
 
-const basicRoutes = require('./routes/crud.js');
-app.use('/api/crud', basicRoutes);
+const account = require('./routes/account.js');
+app.use('/api/account', account);
 
 app.get('/', (req, res) => {
     res.send("Hello ATM Backend Running !!");

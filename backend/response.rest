@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:4000/api/crud/getBalance
+GET http://localhost:4000/api/account/getBalance
 Content-Type: application/json
 
 {
@@ -27,8 +27,8 @@ Content-Type: application/json
 
 ###
 # Get Balance using the Access Token
-GET http://localhost:4000/api/crud/getBalance
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA0ODk4LCJleHAiOjE3NTQ1MDQ5NDh9.ipq8d9LMa4XnqSwbyFGx7BiJrrrfUBfKh_YEgRB4aVg
+GET http://localhost:4000/api/account/getBalance
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA3ODMxLCJleHAiOjE3NTQ1MDc4ODF9.5k2AD2vhC5i4ioUQel0DqfOq7vIErc-jY7MABVepskA
 Content-Type: application/json
 
 {
@@ -41,7 +41,7 @@ POST http://localhost:5000/api/auth/token
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA0NjM1fQ.XWincSP9QU9WI_LyEgmpwngmG8B2hex-LGw1wgpBvOE"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA3ODMxfQ.vZD7SY8m_MXWFQ2QyHycv4JTwDP45c-noStNKxJbPQI"
 }
 
 ###
@@ -50,7 +50,7 @@ DELETE http://localhost:5000/api/auth/logout
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA0NjM1fQ.XWincSP9QU9WI_LyEgmpwngmG8B2hex-LGw1wgpBvOE"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA3ODMxfQ.vZD7SY8m_MXWFQ2QyHycv4JTwDP45c-noStNKxJbPQI"
 }
 
 ###
@@ -61,4 +61,15 @@ Content-Type: application/json
 {
     "accountNumber": "E330G8",
     "pin": "1232"
+}
+
+###
+# Takes Access Token and adds amount (" DEPOSIT ")
+POST http://localhost:4000/api/account/deposit
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTExNjMyLCJleHAiOjE3NTQ1MTE2ODJ9._JSXmmM9bON-AQ1HgTw0HPK_YWNNUsoQJgy34hw1gXU
+Content-Type: application/json
+
+{
+    "accountNumber": "E330G8",
+    "amount": 200
 }

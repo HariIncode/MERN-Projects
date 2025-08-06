@@ -7,8 +7,8 @@
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
-    "start:server": "nodemon server.js",
-    "start:authServer": "nodemon authServer.js",
+    "server": "nodemon server.js",
+    "authServer": "nodemon authServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
