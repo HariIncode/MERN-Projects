@@ -45,7 +45,7 @@ router.post('/login', async (req, res) => {
             return res.status(404).json({ message: "User Not Found!" });
         }
 
-        const isValidPassword = bcrypt.compare(pin.toString(), user.pin);
+        const isValidPassword = await bcrypt.compare(pin, user.pin);
 
         if(!isValidPassword){
             return res.status(401).json({ message: "Password Dosen't Match" });

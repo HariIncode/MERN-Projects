@@ -105,4 +105,27 @@ router.get('/transactions', authenticateToken, async (req, res) => {
     }
 });
 
+router.post('/change-pin', authenticateToken, async (req, res) => {
+    try {
+        const { pin, newPin } = req.body;
+
+        const theUser = await User.findOne({ accountNumber: req.user.accountNumber });
+
+        const isValid = await bcrypt.compare(pin, theUser.pin);
+
+        if(isValid){
+            theUser.pin = newPin;
+        }else{
+            return res.status(400).send("Error in Pin Change");
+        }
+
+        await theUser.save();
+
+        res.status(200).json({ message: "PIN change successful!", password: theUser.pin });
+    } catch (error) {
+        console.log(`Error During PIN CHANGE: ${error}`.red);
+        res.status(500).send(`Error in PIN CHANGE: ${error}`);
+    }
+});
+
 module.exports = router;
