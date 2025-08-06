@@ -48,10 +48,60 @@ router.post('/deposit', authenticateToken, async (req, res) => {
 
         await user.save();
 
-        res.status(200).json({ message: "Deposit Successful", balance: user.balance });
+        res.status(200).json({ message: "Deposit Successful",name: user.name, accountNumber: user.accountNumber ,balance: user.balance });
     } catch (error) {
         console.log(`Error During Deposit: ${error}`.red);
         res.status(500).send(`Error in Deposit: ${error}`);
+    }
+});
+
+router.post('/withdraw', authenticateToken, async (req, res) => {
+    try {
+        const { amount } = req.body;
+        
+        if( !amount || amount <= 0 ){
+            return res.status(400).send("Invalid Withdraw amount");
+        }
+
+        const user = await User.findOne({ accountNumber: req.body.accountNumber });
+
+        if( !user ){
+            return res.status(404).send("User Not Found");
+        }
+
+        user.balance -= amount;
+
+        if( !user.transaction ){
+            user.transaction = [];
+        }
+
+        user.transaction.push({
+            type: 'Withdrawal',
+            amount,
+            date: new Date()
+        });
+
+        await user.save();
+
+        res.status(200).json({ message: "Withdrawl Successful",name: user.name, accountNumber: user.accountNumber ,balance: user.balance });
+    } catch (error) {
+        console.log(`Error During Withdrawl: ${error}`.red);
+        res.status(500).send(`Error in Withdrawl: ${error}`);
+    }
+});
+
+router.get('/transactions', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findOne({ accountNumber: req.user.accountNumber });
+
+        if( !user ){
+            return res.status(404).send("User Not Found");
+        }
+
+        res.status(200).json({ message: "Mini Statement", name: user.name, accountNumber: user.accountNumber ,transaction: user.transaction });
+    } catch (error) {
+        console.log(`Error During Transaction: ${error}`.red);
+        res.status(500).send(`Error in Transaction: ${error}`);
     }
 });
 

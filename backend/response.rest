@@ -73,3 +73,24 @@ Content-Type: application/json
     "accountNumber": "E330G8",
     "amount": 200
 }
+
+###
+# Takes Access Token and reduce amount (" WITHDRAW ")
+POST http://localhost:4000/api/account/withdraw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTEyNzI5LCJleHAiOjE3NTQ1MTI3Nzl9.TCk-cWdEUTCWpZjgU8LjX54eNE9M8eYMCyE8Tj4ykzg
+Content-Type: application/json
+
+{
+    "accountNumber": "E330G8",
+    "amount": 200
+}
+
+###
+# Takes Access Token and fetch mini statement (" TRANSACTIONS ")
+GET http://localhost:4000/api/account/transactions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTE0MDgxLCJleHAiOjE3NTQ1MTQxMzF9.q3TwekVbpWKRLfTwyiFkchRFzLr0zuaB7symNOL6bIQ
+Content-Type: application/json
+
+{
+    "accountNumber": "E330G8"
+}
