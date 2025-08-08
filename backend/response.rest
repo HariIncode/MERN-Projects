@@ -1,34 +1,18 @@
-POST http://localhost:5000/api/auth/login
-Content-Type: application/json
-
-{
-    "accountNumber": "E330G8",
-    "pin": "1232"
-}
-
 ###
 POST http://localhost:5000/api/auth/signup
 Content-Type: application/json
 
 {
-    "name": "Hari",
-    "pin": "1232",
+    "name": "Lee",
+    "pin": "1111",
     "accountType": "Savings",
-    "balance": 1222
-}
-
-###
-GET http://localhost:4000/api/account/getBalance
-Content-Type: application/json
-
-{
-    "accountNumber": "E330G8"
+    "balance": 1000
 }
 
 ###
 # Get Balance using the Access Token
 GET http://localhost:4000/api/account/getBalance
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA3ODMxLCJleHAiOjE3NTQ1MDc4ODF9.5k2AD2vhC5i4ioUQel0DqfOq7vIErc-jY7MABVepskA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiMEkzQklFIiwiaWF0IjoxNzU0NjcyMTU4LCJleHAiOjE3NTQ2NzU3NTh9.blLd_HS_2ns2TW473Ndwj__E43Sz4shaN1JjxZAzQlg
 Content-Type: application/json
 
 {
@@ -58,10 +42,17 @@ Content-Type: application/json
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
+# Hari Credintials
 {
     "accountNumber": "E330G8",
-    "pin": "1311"
+    "pin": "1111"
 }
+
+# Lee Credintials
+# {
+#     "accountNumber": "0I3BIE",
+#     "pin": "1111"
+# }
 
 ###
 # Takes Access Token and adds amount (" DEPOSIT ")
@@ -88,7 +79,7 @@ Content-Type: application/json
 ###
 # Takes Access Token and fetch mini statement (" TRANSACTIONS ")
 GET http://localhost:4000/api/account/transactions
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTE0MDgxLCJleHAiOjE3NTQ1MTQxMzF9.q3TwekVbpWKRLfTwyiFkchRFzLr0zuaB7symNOL6bIQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NjcxOTM1LCJleHAiOjE3NTQ2NzU1MzV9.jLg9YC810LixJ-pS9v4KRqBazCxkOItb7vqAKUhLs24
 Content-Type: application/json
 
 {
@@ -98,10 +89,20 @@ Content-Type: application/json
 ###
 # Takes Access Token and fetch mini statement (" TRANSACTIONS ")
 POST http://localhost:4000/api/account/change-pin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTE5Njc5LCJleHAiOjE3NTQ1MTk3Mjl9._FJoA4mWR40fJ9EG5IKw0bzMV4cTTABQMaDHVPO3c1c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NjcxOTM1LCJleHAiOjE3NTQ2NzU1MzV9.jLg9YC810LixJ-pS9v4KRqBazCxkOItb7vqAKUhLs24
 Content-Type: application/json
 
 {
-    "pin": "1232",
-    "newPin": "1311"
+    "pin": "1311",
+    "newPin": "1111"
+}
+
+###
+POST http://localhost:4000/api/account/transfer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NjcyMzE4LCJleHAiOjE3NTQ2NzU5MTh9.mHSqliEyNKrs9nXJgHWRb29vhqCRvJV7LOuLFOYKIK0
+Content-Type: application/json
+
+{
+    "reciverAccountNumber": "0I3BIE",
+    "amount": 200
 }
