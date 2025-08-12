@@ -2,6 +2,8 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/Users");
 const authenticateToken = require("../middleware/authenticateToken");
+const checkDailyLimit = require("../utils/dailyLimitCheck");
+const dailyLimitCheck = require("../utils/dailyLimitCheck");
 
 const router = express.Router();
 
@@ -80,6 +82,15 @@ router.post("/withdraw", authenticateToken, async (req, res) => {
       return res.status(404).send("User Not Found");
     }
 
+    if(user.balance < amount){
+      return res.status(400).send("Insufficent Balance");
+    }
+
+    const limitCheck = checkDailyLimit(user, amount);
+    if(!limitCheck.allowed){
+      return res.status(400).send(`Daily Limit exceeds. Remaining: ${limitCheck.remaining}`);
+    }
+
     user.balance -= amount;
 
     if (!user.transaction) {
@@ -140,39 +151,48 @@ router.post("/transfer", authenticateToken, async (req, res) => {
       return res.status(404).send("Sender Not Found");
     }
 
-    const reciver = await User.findOne({
-      accountNumber: req.body.reciverAccountNumber,
+    const receiver = await User.findOne({
+      accountNumber: req.body.receiverAccountNumber,
     });
 
-    if (!reciver) {
-      return res.status(404).send("Reciver Not Found");
+    if (!receiver) {
+      return res.status(404).send("receiver Not Found");
     }
 
     const amount = req.body.amount;
 
-    if (!sender.balance - amount >= 0) {
+    if ((sender.balance - amount) < 0) {
       return res.status(400).send("Insufficent Balance");
+    }
+
+    const limitCheck = dailyLimitCheck(sender, amount);
+    if(!limitCheck.allowed){
+      return res
+        .status(400)
+        .send(`Daily Limit exceeds. Remaining: ${limitCheck.remaining}`);
     }
 
     sender.balance -= amount;
     sender.transaction.push({
-      type: "Transfer",
+      type: "Transfer Out",
       amount,
+      to: receiver.name,
       date: new Date(),
     });
 
     await sender.save();
 
-    reciver.balance += amount;
-    reciver.transaction.push({
-      type: "Transfer",
+    receiver.balance += amount;
+    receiver.transaction.push({
+      type: "Transfer In",
       amount,
+      from: sender.name,
       date: new Date(),
     });
 
-    await reciver.save();
+    await receiver.save();
 
-    res.status(200).json({ message: `Transfer Done Sent ${amount} from ${sender.name} to ${reciver.name}`})
+    res.status(200).json({ message: `Transfer Done Sent ${amount} from ${sender.name} to ${receiver.name}`})
   } catch (error) {
         console.log(`Error During Transfer: ${error}`.red);
         res.status(500).send(`Error in Transfer: ${error}`);

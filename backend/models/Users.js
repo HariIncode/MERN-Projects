@@ -4,51 +4,67 @@ const { customAlphabet } = require("nanoid");
 
 const nanoid = customAlphabet("ABCDEFGHIJK0123456789", 6);
 
+// Define transaction schema FIRST
+const transactionSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ["Deposit", "Withdrawal", "Transfer Out", "Transfer In"],
+    required: true,
+  },
+  amount: { type: Number, required: true, min: 1 },
+  date: { type: Date, default: Date.now },
+  from: {
+    type: String,
+    required: function () {
+      return this.type === "Transfer Out" || this.type === "Withdrawal";
+    },
+  },
+  to: {
+    type: String,
+    required: function () {
+      return this.type === "Transfer In" || this.type === "Deposit";
+    },
+  },
+});
+
+// Now define user schema
 const userSchema = new mongoose.Schema({
   accountNumber: { type: String, unique: true },
   name: { type: String, required: true },
   pin: { type: String, required: true },
-  balance: { type: Number, default: 1000.0 },
-  accountType: { type: String, enum: ["Savings", "Current"], required: true },
+  balance: { type: Number, default: 1000.0, min: 0 },
+  accountType: {
+    type: String,
+    enum: ["Savings", "Premium", "Business"],
+    default: "Savings",
+    required: true,
+  },
   transaction: {
-    type: [
-      {
-        type: {
-          type: String,
-          enum: ["Deposit", "Withdrawal", "Transfer"],
-          required: true,
-        },
-        amount: { type: Number, required: true },
-        date: { type: Date, default: Date.now },
-      },
-    ],
+    type: [transactionSchema],
     default: [],
   },
+  dailyWithdrawn: { type: Number, default: 0 },
+  lastTransactionDate: { type: Date },
 });
 
-//Use Function() not arrow function [this. will not work]
+// Pre-save hook
 userSchema.pre("save", async function (next) {
-  //Create Custom AccountId using nanoid
   if (this.isNew) {
     this.accountNumber = nanoid();
   }
 
-  //Hash the PIN if modified or new
   if (this.isModified("pin")) {
     if (!/^\d{4}$/.test(this.pin)) {
       throw new Error("PIN must be a 4-digit number");
     }
-
     const salt = await bcrypt.genSalt(10);
-    //bcrypt works only on Strings
     this.pin = await bcrypt.hash(this.pin.toString(), salt);
   }
 
   next();
 });
 
-//userSchema.methods makes all the user to use this method
-//comparePin is a custom method to compare Pin
+// Method to compare pin
 userSchema.methods.comparePin = async function (enteredPin) {
   return await bcrypt.compare(enteredPin.toString(), this.pin);
 };

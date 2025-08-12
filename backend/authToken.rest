@@ -1,0 +1,34 @@
+###
+# Takes the refreshToken and checks in the refreshToken Array If yes then creates a new Access Token
+POST http://localhost:5000/api/auth/token
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA3ODMxfQ.vZD7SY8m_MXWFQ2QyHycv4JTwDP45c-noStNKxJbPQI"
+}
+
+###
+# Takes refreshToken and removes it from the refreshToken Array ( User cannot regenerate access token i.e. Logout )
+DELETE http://localhost:5000/api/auth/logout
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50TnVtYmVyIjoiRTMzMEc4IiwiaWF0IjoxNzU0NTA3ODMxfQ.vZD7SY8m_MXWFQ2QyHycv4JTwDP45c-noStNKxJbPQI"
+}
+
+###
+# Generate new access and refresh token
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+# Hari Credintials
+{
+    "accountNumber": "E330G8",
+    "pin": "1111"
+}
+
+# Lee Credintials
+# {
+#     "accountNumber": "0I3BIE",
+#     "pin": "1111"
+# }

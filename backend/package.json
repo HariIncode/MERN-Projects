@@ -21,5 +21,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.0",
     "nanoid": "^5.1.5"
+  },
+  "devDependencies": {
+    "eslint": "^9.33.0"
   }
 }
